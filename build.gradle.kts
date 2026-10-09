@@ -24,4 +24,9 @@ tasks.test {
     // Pass -PtestGradleInstallation=<dir> to check a locally built distribution instead.
     providers.gradleProperty("testGradleVersion").orNull?.let { systemProperty("testGradleVersion", it) }
     providers.gradleProperty("testGradleInstallation").orNull?.let { systemProperty("testGradleInstallation", it) }
+
+    systemProperty("junit.jupiter.execution.parallel.enabled", "true")
+    systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")
+    systemProperty("junit.jupiter.execution.parallel.config.strategy", "fixed")
+    systemProperty("junit.jupiter.execution.parallel.config.fixed.parallelism", "4")
 }
