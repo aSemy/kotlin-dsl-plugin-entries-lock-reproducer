@@ -3,7 +3,7 @@ package demo;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.util.GradleVersion;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PluginEntriesLockTest {
 
-    @Test
+    // The daemon writes to the cache in the background just before the build ends,
+    // so the delete only fails when it lands in that window. Repeat to hit it.
+    @RepeatedTest(20)
     void projectDirectoryCanBeDeletedAfterBuild() throws IOException {
         Path dir = Files.createTempDirectory("plugin-entries-lock");
 
