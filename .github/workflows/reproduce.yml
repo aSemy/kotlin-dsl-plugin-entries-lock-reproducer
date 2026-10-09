@@ -4,17 +4,16 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-    inputs:
-      gradle-version:
-        description: Gradle version run by TestKit
-        default: "9.8.1"
 
 jobs:
   test:
+    name: Gradle ${{ matrix.gradle-version }} on ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [ windows-latest, ubuntu-latest ]
+        # 9.4.1 is the last release before KotlinDslPluginEntryCache (added in 9.5.0)
+        gradle-version: [ "9.4.1", "9.8.1" ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -25,10 +24,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Run reproducer
         shell: bash
-        run: ./gradlew test --stacktrace -PtestGradleVersion=${{ inputs.gradle-version || '9.8.1' }}
+        run: ./gradlew test --stacktrace -PtestGradleVersion=${{ matrix.gradle-version }}
       - name: Upload test report
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-report-${{ matrix.os }}
+          name: test-report-${{ matrix.os }}-gradle-${{ matrix.gradle-version }}
           path: build/reports/tests

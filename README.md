@@ -20,5 +20,6 @@ Linux and macOS allow deleting open files, so the test passes there.
 ./gradlew test -PtestGradleInstallation=<dir>   # a locally built distribution
 ```
 
-The workflow in `.github/workflows/reproduce.yml` runs the test on `windows-latest` and `ubuntu-latest`.
+The workflow in `.github/workflows/reproduce.yml` runs the test on `windows-latest` and `ubuntu-latest`, against Gradle 9.4.0 (before the cache was added in 9.5.0) and 9.8.1.
+Only Gradle 9.8.1 on Windows is expected to fail.
 GitHub only picks it up when this directory is the root of its own repository.

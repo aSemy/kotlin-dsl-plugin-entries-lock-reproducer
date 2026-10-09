@@ -22,19 +22,25 @@ class PluginEntriesLockTest {
     void projectDirectoryCanBeDeletedAfterBuild() throws IOException {
         Path dir = Files.createTempDirectory("plugin-entries-lock");
 
-        write(dir.resolve("settings.gradle.kts"), "rootProject.name = \"demo-build\"\n");
-        write(dir.resolve("buildSrc/build.gradle.kts"),
-            "plugins {\n" +
-            "    `kotlin-dsl`\n" +
-            "}\n" +
-            "repositories {\n" +
-            "    mavenCentral()\n" +
-            "}\n");
-        write(dir.resolve("buildSrc/src/main/kotlin/demo.gradle.kts"), "println(\"demo applied\")\n");
-        write(dir.resolve("build.gradle.kts"),
-            "plugins {\n" +
-            "    id(\"demo\")\n" +
-            "}\n");
+        write(dir.resolve("settings.gradle.kts"), """
+            rootProject.name = "demo-build"
+            """);
+        write(dir.resolve("buildSrc/build.gradle.kts"), """
+            plugins {
+                `kotlin-dsl`
+            }
+            repositories {
+                mavenCentral()
+            }
+            """);
+        write(dir.resolve("buildSrc/src/main/kotlin/demo.gradle.kts"), """
+            println("demo applied")
+            """);
+        write(dir.resolve("build.gradle.kts"), """
+            plugins {
+                id("demo")
+            }
+            """);
 
         BuildResult result = runner(dir).withArguments("help").build();
         assertTrue(result.getOutput().contains("demo applied"));
